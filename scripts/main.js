@@ -5,12 +5,16 @@ var THUMBNAIL_LINK_SELECTOR = "[data-image-role='trigger']";
 var HIDDEN_DETAIL_CLASS = 'hidden-detail';
 var TINY_EFFECT_CLASS = 'is-tiny';
 var ESC_KEY = 27;
+var IMAGE_URLS = ["img/otter1.jpg", "img/otter2.jpg", "img/otter3.jpg", "img/otter4.jpg", "img/otter5.jpg"];
+var TITLES = ["Stayin' Alive", "How Deep Is Your Love", "You Should Be Dancing", "Night Fever", "To Love Somebody"];
 
 function setDetails(imageUrl, titleText) {
     "use strict";
     var detailImage = document.querySelector(DETAIL_IMAGE_SELECTOR);
 
     detailImage.setAttribute("src", imageUrl);
+    detailImage.setAttribute("data-image-url", imageUrl);
+    detailImage.setAttribute("data-image-title", titleText);
 
     var detailTitle = document.querySelector(DETAIL_TITLE_SELECTOR);
     detailTitle.textContent = titleText;
@@ -72,11 +76,65 @@ function addKeyPressHandler() {
  });
 }
 
+
+function previous() {
+    var currentDisplay = document.querySelector(DETAIL_IMAGE_SELECTOR);
+    var currentImageUrl = imageFromThumb(currentDisplay);
+    var currentOtter = 0;
+
+    for (var i = 0; i < 5; i++) {
+        if (IMAGE_URLS[i] == currentImageUrl) {
+            currentOtter = i;
+        }
+    }
+
+    if (currentOtter > 0) {
+        setDetails(IMAGE_URLS[currentOtter - 1], TITLES[currentOtter - 1]);
+        showDetails();
+    }
+}
+
+function next() {
+    var currentDisplay = document.querySelector(DETAIL_IMAGE_SELECTOR);
+    var currentImageUrl = imageFromThumb(currentDisplay);
+    var currentOtter = 0;
+
+    for (var i = 0; i < 5; i++) {
+        if (IMAGE_URLS[i] == currentImageUrl) {
+            currentOtter = i;
+        }
+    }
+
+    if (currentOtter < 4) {
+        setDetails(IMAGE_URLS[currentOtter + 1], TITLES[currentOtter + 1]);
+        showDetails();
+    }
+}
+
+
+function addButtonHandlers() {
+    "use strict";
+    var previousButton = document.getElementById("previous");
+    var nextButton = document.getElementById("next");
+
+    previousButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        previous();
+    });
+    
+    nextButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        next();
+    });
+}
+
+
 function initializeEvents() {
     "use strict";
     var thumbnails = getThumbnailsArray();
     thumbnails.forEach(addThumbClickHandler);
     addKeyPressHandler();
+    addButtonHandlers();
 }
 
 initializeEvents();
